@@ -6,68 +6,89 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 )
 
-const namespace string = "orbital-core-auth-"
+var namespace, path string
+
+// New sets namespace for the file
+func New(path, ns string) {
+	namespace = ns
+}
+
+// Status type for status
+type Status int
+
+// Status possible values
+const (
+	StatusSuccess Status = iota + 1
+	StatusGameInternal
+	StatusCasinoHTTPError
+	StatusGameBadRequest
+	StatusCoreBadRequest
+	StatusCasinoBadResponse
+)
+
+// ObjectLog type for storing object
+type ObjectLog struct {
+	Object    interface{} `json:"object"`
+	Status    Status      `json:"status"`
+	Timestamp time.Time   `json:"timestamp"`
+}
+
+// Object log into file
+func Object(name string, t interface{}, status Status) {
+	tl := ObjectLog{Object: t, Status: status, Timestamp: time.Now()}
+	b, _ := json.Marshal(tl) // Imedia arasdros moxdeba aq error
+	err := myappend(name, b)
+	if err != nil {
+		log.Fatalf("could not append object: %v", err)
+	}
+}
 
 // Entity object
 type entity struct {
-	Message  string   `json:"message"`
-	Level    string   `json:"level"`
-	Function string   `json:"function"`
-	Details  *Details `json:"details"`
-}
-
-// Details object
-type Details struct {
-	TransactionID string `json:"transaction_id,omitempty"`
-	RoundID       string `json:"round_id,omitempty"`
-	SessionID     string `json:"session_id,omitempty"`
-	UserID        string `json:"user_id,omitempty"`
-	GameID        int    `json:"game_id,omitempty"`
-	CurrencyID    int    `json:"currency_id,omitempty"`
+	Message  string `json:"message"`
+	Level    string `json:"level"`
+	Function string `json:"function"`
 }
 
 // Debug logs on debug level
-func Debug(msg string, d *Details) {
+func Debug(msg string) {
 	e := entity{
 		Message:  msg,
 		Level:    "DEBUG",
 		Function: "test",
-		Details:  d,
 	}
 	logE(e)
 }
 
 // Info logs on info level
-func Info(msg string, d *Details) {
+func Info(msg string) {
 	e := entity{
 		Message:  msg,
 		Level:    "INFO",
 		Function: "test",
-		Details:  d,
 	}
 	logE(e)
 }
 
 // Warn logs on warn level
-func Warn(msg string, d *Details) {
+func Warn(msg string) {
 	e := entity{
 		Message:  msg,
 		Level:    "WARN",
 		Function: "test",
-		Details:  d,
 	}
 	logE(e)
 }
 
 // Error logs on error level
-func Error(msg string, d *Details) {
+func Error(msg string) {
 	e := entity{
 		Message:  msg,
 		Level:    "ERROR",
 		Function: "test",
-		Details:  d,
 	}
 	logE(e)
 }
@@ -81,18 +102,10 @@ func logE(e entity) {
 }
 
 func myappend(name string, b []byte) (err error) {
-	path := os.Getenv("LOG_PATH")
 	b = append(b, "\n"...)
-	filename := fmt.Sprintf("%s/%s%s", path, namespace, name)
-	fmt.Printf("append: %v", filename)
-	var f *os.File
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		f, err = os.Create(filename)
-	} else {
-		f, err = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
-		if err != nil {
-			return err
-		}
+	f, err := File(name)
+	if err != nil {
+		return err
 	}
 	defer f.Close()
 	_, err = f.Write(b)
@@ -101,7 +114,6 @@ func myappend(name string, b []byte) (err error) {
 
 // File returns file to log in request/response
 func File(name string) (io.WriteCloser, error) {
-	path := os.Getenv("LOG_PATH")
 	filename := fmt.Sprintf("%s/%s%s", path, namespace, name)
 	var f *os.File
 	var err error
