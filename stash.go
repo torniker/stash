@@ -31,9 +31,10 @@ const (
 
 // ObjectLog type for storing object
 type ObjectLog struct {
-	Object    interface{} `json:"object"`
-	Status    Status      `json:"status"`
-	Timestamp time.Time   `json:"timestamp"`
+	Object      interface{} `json:"object"`
+	Status      Status      `json:"status"`
+	Timestamp   time.Time   `json:"timestamp"`
+	IsProcessed bool        `json:"is_processed"`
 }
 
 // Object log into file
