@@ -115,7 +115,7 @@ func myappend(name string, b []byte) (err error) {
 
 // File returns file to log in request/response
 func File(name string) (io.WriteCloser, error) {
-	filename := fmt.Sprintf("%s/%s%s", path, namespace, name)
+	filename := fmt.Sprintf("%s/%s%s.log", path, namespace, name)
 	var f *os.File
 	var err error
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
