@@ -133,6 +133,6 @@ func File(name string) (io.WriteCloser, error) {
 	} else {
 		f, err = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 	}
-	fmt.Printf("error: %v\n", err)
+	fmt.Printf("f: %v error: %v\n", f, err)
 	return f, err
 }
