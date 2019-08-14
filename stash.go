@@ -114,6 +114,7 @@ func myappend(name string, b []byte) (err error) {
 		return fmt.Errorf("File returned: %v with name: %v", err, name)
 	}
 	defer f.Close()
+	fmt.Printf("----> file pointer %v", f)
 	_, err = f.Write(b)
 	return fmt.Errorf("f.Write returned: %v", err)
 }
