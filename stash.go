@@ -116,6 +116,8 @@ func myappend(name string, b []byte) (err error) {
 	if f == nil {
 		return fmt.Errorf("File returned nil for path: %v, ns: %v name: %v", path, namespace, name)
 	}
+	fmt.Printf("f: %v\n", f)
+	fmt.Printf("b: %v\n", string(b))
 	// defer f.Close()
 	_, err = f.Write(b)
 	f.Close()
