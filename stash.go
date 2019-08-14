@@ -6,10 +6,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"sync"
 	"time"
 )
 
 var namespace, path string
+var m sync.Mutex
 
 // New sets namespace for the file
 func New(p, ns string) {
@@ -104,6 +106,8 @@ func logE(e entity) {
 }
 
 func myappend(name string, b []byte) (err error) {
+	m.Lock()
+	defer m.Unlock()
 	b = append(b, "\n"...)
 	f, err := File(name)
 	if err != nil {
