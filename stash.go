@@ -128,9 +128,6 @@ func File(name string) (io.WriteCloser, error) {
 		f, err = os.Create(filename)
 	} else {
 		f, err = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
-		if err != nil {
-			return nil, err
-		}
 	}
 	return f, err
 }
