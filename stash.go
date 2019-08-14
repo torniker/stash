@@ -116,19 +116,14 @@ func myappend(name string, b []byte) (err error) {
 	if f == nil {
 		return fmt.Errorf("File returned nil for path: %v, ns: %v name: %v", path, namespace, name)
 	}
-	fmt.Printf("f: %v\n", f)
-	fmt.Printf("b: %v\n", string(b))
-	// defer f.Close()
 	_, err = f.Write(b)
 	f.Close()
-	// fmt.Printf("path: %v ns: %v name: %v", path, namespace, name)
-	return fmt.Errorf("f.Write returned f: %v err: %v", f, err)
+	return err
 }
 
 // File returns file to log in request/response
 func File(name string) (io.WriteCloser, error) {
 	filename := fmt.Sprintf("%s/%s%s.log", path, namespace, name)
-	fmt.Printf("filename %v\n", filename)
 	var f *os.File
 	var err error
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -136,6 +131,5 @@ func File(name string) (io.WriteCloser, error) {
 	} else {
 		f, err = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 	}
-	fmt.Printf("f: %v error: %v\n", f, err)
 	return f, err
 }
