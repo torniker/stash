@@ -118,7 +118,7 @@ func myappend(name string, b []byte) (err error) {
 	}
 	defer f.Close()
 	_, err = f.Write(b)
-	return fmt.Errorf("f.Write returned: %v", err)
+	return fmt.Errorf("f.Write returned f: %v err: %v", f, err)
 }
 
 // File returns file to log in request/response
