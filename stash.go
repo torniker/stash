@@ -111,11 +111,11 @@ func myappend(name string, b []byte) (err error) {
 	b = append(b, "\n"...)
 	f, err := File(name)
 	if err != nil {
-		return err
+		return fmt.Errorf("File returned: %v with name: %v", err, name)
 	}
 	defer f.Close()
 	_, err = f.Write(b)
-	return err
+	return fmt.Errorf("f.Write returned: %v", err)
 }
 
 // File returns file to log in request/response
