@@ -12,8 +12,9 @@ import (
 var namespace, path string
 
 // New sets namespace for the file
-func New(path, ns string) {
+func New(p, ns string) {
 	namespace = ns
+	path = p
 }
 
 // Status type for status
